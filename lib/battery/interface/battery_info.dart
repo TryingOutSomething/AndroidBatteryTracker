@@ -6,7 +6,11 @@ import '../../scheduler/scheduler.dart';
 import '../battery_module.dart';
 
 class BatteryInfo extends StatefulWidget {
-  const BatteryInfo({Key? key}) : super(key: key);
+  late final Duration _refreshInterval;
+
+  BatteryInfo(Duration duration, {Key? key}) : super(key: key) {
+    _refreshInterval = duration;
+  }
 
   @override
   State<StatefulWidget> createState() => _BatteryInfoState();
@@ -14,13 +18,12 @@ class BatteryInfo extends StatefulWidget {
 
 class _BatteryInfoState extends State<BatteryInfo> with WidgetsBindingObserver {
   Timer? _timer;
-  final int _refreshIntervalSeconds = 5;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance?.addObserver(this);
-    _refreshBatteryInfo(_refreshIntervalSeconds);
+    _refreshBatteryInfo(widget._refreshInterval);
   }
 
   @override
@@ -37,7 +40,7 @@ class _BatteryInfoState extends State<BatteryInfo> with WidgetsBindingObserver {
     switch (state) {
       case AppLifecycleState.resumed:
         setState(() {});
-        _refreshBatteryInfo(_refreshIntervalSeconds);
+        _refreshBatteryInfo(widget._refreshInterval);
         break;
       case AppLifecycleState.inactive:
         break;
@@ -49,9 +52,9 @@ class _BatteryInfoState extends State<BatteryInfo> with WidgetsBindingObserver {
     }
   }
 
-  void _refreshBatteryInfo([int refreshIntervalSeconds = 1]) {
-    _timer = Scheduler.createPeriodicTimer(
-        Duration(seconds: refreshIntervalSeconds), (timer) => setState(() {}));
+  void _refreshBatteryInfo(Duration duration) {
+    _timer =
+        Scheduler.createPeriodicTimer(duration, (timer) => setState(() {}));
   }
 
   @override

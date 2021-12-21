@@ -35,6 +35,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final Scheduler _scheduler = Scheduler();
+  final Duration _refreshInterval = const Duration(seconds: 5);
 
   @override
   Widget build(BuildContext context) {
@@ -46,11 +47,11 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const BatteryInfo(),
+            BatteryInfo(_refreshInterval),
             const BatteryChargingStatus(),
             ElevatedButton(
                 onPressed: () =>
-                    _scheduler.startTask(duration: const Duration(seconds: 5)),
+                    _scheduler.startTask(duration: _refreshInterval),
                 child: const Text('Request this shit')),
             ElevatedButton(
                 onPressed: () => _scheduler.cancelAllTasks(),

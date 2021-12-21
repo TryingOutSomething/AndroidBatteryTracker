@@ -1,8 +1,9 @@
 import 'dart:async';
 
-import 'package:client_dart/battery/battery_module.dart';
-import 'package:client_dart/scheduler/scheduler.dart';
 import 'package:flutter/material.dart';
+
+import '../../scheduler/scheduler.dart';
+import '../battery_module.dart';
 
 class BatteryInfo extends StatefulWidget {
   const BatteryInfo({Key? key}) : super(key: key);

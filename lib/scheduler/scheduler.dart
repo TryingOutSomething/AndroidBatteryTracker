@@ -1,8 +1,9 @@
 import 'dart:async';
 
-import 'package:client_dart/battery/battery_module.dart';
-import 'package:client_dart/scheduler/background_process_handler.dart';
 import 'package:flutter_background/flutter_background.dart';
+
+import '../battery/battery_module.dart';
+import 'background_process_handler.dart';
 
 typedef TimerCallback = Function(Timer timer);
 

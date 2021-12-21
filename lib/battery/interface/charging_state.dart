@@ -1,5 +1,6 @@
-import 'package:client_dart/battery/battery_module.dart';
 import 'package:flutter/material.dart';
+
+import '../battery_module.dart';
 
 class BatteryChargingStatus extends StatefulWidget {
   const BatteryChargingStatus({Key? key}) : super(key: key);

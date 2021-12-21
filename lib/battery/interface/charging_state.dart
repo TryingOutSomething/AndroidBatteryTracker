@@ -10,6 +10,12 @@ class BatteryChargingStatus extends StatefulWidget {
 
 class _BatteryChargingStatusState extends State<BatteryChargingStatus> {
   @override
+  void dispose() {
+    super.dispose();
+    BatteryModule.unsubscribeBatteryStateChanges();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return StreamBuilder(
         stream: BatteryModule.chargingStatus,

@@ -23,10 +23,14 @@ class Scheduler {
   void startTask({required Duration duration}) {
     _handler.startBackgroundProcess();
 
+    List<Function> callbacks = <Function>[cancelAllTasks];
+    BatteryModule.registerCallbacks(
+        onBatteryFull: callbacks, onBatteryDischarging: callbacks);
+    BatteryModule.subscribeToBatteryStateChange();
+
     _periodicTimer = createPeriodicTimer(duration, (timer) async {
       int batteryLevel = await BatteryModule.batteryLevel;
       // TODO: Perform http request to server;
-      // BatteryModule.resubscribeToBatteryStateChange();
     });
   }
 

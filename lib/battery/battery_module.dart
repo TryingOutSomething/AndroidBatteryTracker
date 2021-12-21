@@ -33,8 +33,6 @@ class BatteryModule {
   static void subscribeToBatteryStateChange() {
     _ensureCallbackListsInitialised();
 
-    // TODO: Handle resume stream
-
     _chargingStateController =
         _instance.onBatteryStateChanged.listen((BatteryState state) {
       switch (state) {
@@ -63,13 +61,7 @@ class BatteryModule {
     });
   }
 
-  static void resubscribeToBatteryStateChange() {
-    unsubscribeBatteryStateChanges();
-    subscribeToBatteryStateChange();
-  }
-
   static void unsubscribeBatteryStateChanges() {
     _chargingStateController?.cancel();
-    _chargingStateController = null;
   }
 }

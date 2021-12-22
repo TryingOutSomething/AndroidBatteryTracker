@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:battery_plus/battery_plus.dart';
 import 'package:flutter_background/flutter_background.dart';
 
 import '../battery/services/battery_module.dart';
@@ -24,9 +25,8 @@ class Scheduler {
   void startTask({required Duration duration}) {
     _handler.startBackgroundProcess();
 
-    List<Function> callbacks = <Function>[cancelAllTasks];
-    BatteryModule.registerCallbacks(
-        onBatteryFull: callbacks, onBatteryDischarging: callbacks);
+    BatteryModule.registerCallback(BatteryState.full, cancelAllTasks);
+    BatteryModule.registerCallback(BatteryState.discharging, cancelAllTasks);
     BatteryModule.subscribeToBatteryStateChange();
 
     _periodicTimer = createPeriodicTimer(duration, (timer) async {
@@ -36,13 +36,13 @@ class Scheduler {
   }
 
   void cancelAllTasks() {
-    print('cancelling');
     _handler.stopBackgroundProcessing();
     _cancelPeriodicTask();
   }
 
   void _cancelPeriodicTask() {
     BatteryModule.unsubscribeBatteryStateChanges();
+    BatteryModule.unregisterCallbacksFromAllStates();
     _periodicTimer.cancel();
   }
 

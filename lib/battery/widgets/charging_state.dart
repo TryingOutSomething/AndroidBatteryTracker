@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../battery_module.dart';
+import '../services/battery_module.dart';
 
 class BatteryChargingStatus extends StatefulWidget {
   const BatteryChargingStatus({Key? key}) : super(key: key);
@@ -21,10 +21,6 @@ class _BatteryChargingStatusState extends State<BatteryChargingStatus> {
     return StreamBuilder(
         stream: BatteryModule.chargingStatus,
         builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return Text(snapshot.error.toString());
-          }
-
           if (snapshot.hasData) {
             String capitalisedStatus = _getStatusFromEnum(snapshot.data);
 

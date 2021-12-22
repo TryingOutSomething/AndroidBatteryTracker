@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import '../../scheduler/scheduler.dart';
-import '../battery_module.dart';
+import '../services/battery_module.dart';
 
 class BatteryInfo extends StatefulWidget {
   late final Duration _refreshInterval;

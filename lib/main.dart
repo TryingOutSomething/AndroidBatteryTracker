@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'battery/interface/battery_info.dart';
-import 'battery/interface/charging_state.dart';
+import 'battery/widgets/battery_info.dart';
+import 'battery/widgets/charging_state.dart';
 import 'scheduler/scheduler.dart';
 
 void main() {

@@ -41,19 +41,6 @@ class BatteryModule {
     _chargingStateController =
         _instance.onBatteryStateChanged.listen((BatteryState state) {
       _invokeStateCallbacks(state);
-
-      switch (state) {
-        case BatteryState.full:
-          _chargingStateController?.pause();
-          break;
-        case BatteryState.charging:
-          break;
-        case BatteryState.discharging:
-          _chargingStateController?.pause();
-          break;
-        case BatteryState.unknown:
-          break;
-      }
     });
   }
 

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:client_dart/battery/widgets/charging_state.dart';
 import 'package:flutter/material.dart';
 
 import '../../scheduler/scheduler.dart';
@@ -59,18 +60,23 @@ class _BatteryInfoState extends State<BatteryInfo> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<int>(
-        future: BatteryModule.batteryLevel,
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return Text(snapshot.data.toString());
-          }
+    return Column(
+      children: [
+        FutureBuilder<int>(
+            future: BatteryModule.batteryLevel,
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return Text(snapshot.data.toString());
+              }
 
-          if (snapshot.hasError) {
-            return Text(snapshot.error.toString());
-          }
+              if (snapshot.hasError) {
+                return Text(snapshot.error.toString());
+              }
 
-          return const CircularProgressIndicator();
-        });
+              return const CircularProgressIndicator();
+            }),
+        const BatteryChargingStatus()
+      ],
+    );
   }
 }

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import 'battery/widgets/battery_info.dart';
-import 'battery/widgets/charging_state.dart';
 import 'scheduler/scheduler.dart';
 
 void main() {
@@ -48,7 +47,6 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             BatteryInfo(_refreshInterval),
-            const BatteryChargingStatus(),
             ElevatedButton(
                 onPressed: () =>
                     _scheduler.startTask(duration: _refreshInterval),

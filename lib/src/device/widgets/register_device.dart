@@ -44,30 +44,9 @@ class _RegisterDeviceToServerState extends State<RegisterDeviceToServer> {
       actions: <Widget>[
         TextButton(
             onPressed: () async {
-              final isValidUrl = HttpClient.isValidUrl(_controller.text);
+              final success = await _registerDevice();
 
-              if (!isValidUrl) {
-                setState(() {
-                  _inputHasError = true;
-                  _errorMessage = 'Invalid endpoint!';
-                });
-
-                return;
-              }
-
-              HttpClient.setBaseEndPoint(_controller.text);
-
-              // TODO: Move this to top level. Battery level must always be updated
-              final device = Device(
-                  deviceId: DeviceInfo.deviceId,
-                  deviceName: await DeviceInfo.deviceName,
-                  batteryLevel: (await BatteryModule.batteryLevel).toString());
-
-              final responseResult = await HttpClient.registerDevice(device);
-
-              if (!responseResult.success) {
-                _errorMessage = responseResult.message;
-                _inputHasError = true;
+              if (!success) {
                 return;
               }
 
@@ -76,5 +55,35 @@ class _RegisterDeviceToServerState extends State<RegisterDeviceToServer> {
             child: const Text('Register Device'))
       ],
     );
+  }
+
+  Future<bool> _registerDevice() async {
+    final isValidUrl = HttpClient.isValidUrl(_controller.text);
+
+    if (!isValidUrl) {
+      setState(() {
+        _inputHasError = true;
+        _errorMessage = 'Invalid endpoint!';
+      });
+
+      return false;
+    }
+
+    HttpClient.setBaseEndPoint(_controller.text);
+
+    final device = Device(
+        deviceId: DeviceInfo.deviceId,
+        deviceName: await DeviceInfo.deviceName,
+        batteryLevel: (await BatteryModule.batteryLevel).toString());
+
+    final responseResult = await HttpClient.registerDevice(device);
+
+    if (!responseResult.success) {
+      _errorMessage = responseResult.message;
+      _inputHasError = true;
+      return false;
+    }
+
+    return true;
   }
 }

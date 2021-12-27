@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:http/http.dart' as http;
 
@@ -32,99 +33,44 @@ class HttpClient {
     return regex.hasMatch(url);
   }
 
-  static Future<bool> registerDevice(Device device) async {
-    final response = await http.post(
-        Uri.parse(_baseEndpoint! + ApiRoutes.registerDevice),
-        headers: _headers,
-        body: jsonEncode(device.toJson()));
+  static Future<ResponseResult> registerDevice(Device device) async {
+    try {
+      final response = await http.post(
+          Uri.parse(_baseEndpoint! + ApiRoutes.registerDevice),
+          headers: _headers,
+          body: jsonEncode(device.toJson()));
 
-    ResponseResult? result = _parseResponse(response);
-
-    switch (result?.serviceCode) {
-      case ServiceCode.registerSuccess:
-        // TODO: Inform user success
-        return true;
-      case ServiceCode.registerFailure:
-        // TODO: Inform user error
-        return false;
-      case ServiceCode.fieldEmpty:
-        // TODO: Inform user error
-        return false;
-      case ServiceCode.parameterValidationError:
-        // TODO: Inform user error
-        return false;
-      default:
-        // TODO: Inform user error
-        return false;
+      return ResponseResult.fromJson(response, true);
+    } on SocketException {
+      return ResponseResult.connectionError(ServiceCode.cannotConnectToServer);
     }
   }
 
-  static Future<bool> unregisterDevice(UnregisterDevice device) async {
-    final response = await http.post(
-        Uri.parse(_baseEndpoint! + ApiRoutes.unregisterDevice),
-        headers: _headers,
-        body: jsonEncode(device.toJson()));
+  static Future<ResponseResult> unregisterDevice(
+      UnregisterDevice device) async {
+    try {
+      final response = await http.post(
+          Uri.parse(_baseEndpoint! + ApiRoutes.unregisterDevice),
+          headers: _headers,
+          body: jsonEncode(device.toJson()));
 
-    ResponseResult? result = _parseResponse(response);
-
-    switch (result?.serviceCode) {
-      case ServiceCode.unregisterSuccess:
-        // TODO: Inform user success
-        return true;
-      case ServiceCode.unregisterFailure:
-        // TODO: Inform user error
-        return false;
-      case ServiceCode.fieldEmpty:
-        // TODO: Inform user error
-        return false;
-      case ServiceCode.parameterValidationError:
-        // TODO: Inform user error
-        return false;
-      default:
-        // TODO: Inform user error
-        return false;
+      return ResponseResult.fromJson(response, true);
+    } on SocketException {
+      return ResponseResult.connectionError(ServiceCode.cannotConnectToServer);
     }
   }
 
-  static Future<bool> emitBatteryLevel(
+  static Future<ResponseResult> emitBatteryLevel(
       DeviceBatteryInfo deviceBatteryInfo) async {
-    final response = await http.put(
-        Uri.parse(_baseEndpoint! + ApiRoutes.emitBatteryLevel),
-        headers: _headers,
-        body: jsonEncode(deviceBatteryInfo));
+    try {
+      final response = await http.put(
+          Uri.parse(_baseEndpoint! + ApiRoutes.emitBatteryLevel),
+          headers: _headers,
+          body: jsonEncode(deviceBatteryInfo));
 
-    ResponseResult? result = _parseResponse(response);
-
-    switch (result?.serviceCode) {
-      case ServiceCode.batteryLevelReceived:
-        // TODO: Inform user success
-        return true;
-      case ServiceCode.batteryLevelError:
-        // TODO: Inform user error
-        return false;
-      case ServiceCode.fieldEmpty:
-        // TODO: Inform user error
-        return false;
-      case ServiceCode.parameterValidationError:
-        // TODO: Inform user error
-        return false;
-      case ServiceCode.invalidBatteryRange:
-        // TODO: Inform user error
-        return false;
-      default:
-        // TODO: Inform user error
-        return false;
+      return ResponseResult.fromJson(response, true);
+    } on SocketException {
+      return ResponseResult.connectionError(ServiceCode.cannotConnectToServer);
     }
-  }
-
-  static ResponseResult? _parseResponse(http.Response response) {
-    int statusCode = response.statusCode;
-
-    if (statusCode == 502) {
-      // TODO: Inform user that server is not up
-      return null;
-    }
-
-    return ResponseResult.fromJson(jsonDecode(response.body));
   }
 }

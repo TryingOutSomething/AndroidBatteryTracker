@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
+import '../../api/dtos/device.dart';
 import '../../api/http_client.dart';
+import '../../battery/services/battery_module.dart';
+import '../services/device_info.dart';
 
 void showRegisterDeviceDialog(BuildContext context) {
   Future(() => showDialog(
@@ -19,6 +22,7 @@ class RegisterDeviceToServer extends StatefulWidget {
 class _RegisterDeviceToServerState extends State<RegisterDeviceToServer> {
   final _controller = TextEditingController();
   bool _inputHasError = false;
+  String _errorMessage = '';
 
   @override
   void dispose() {
@@ -35,7 +39,7 @@ class _RegisterDeviceToServerState extends State<RegisterDeviceToServer> {
         decoration: InputDecoration(
             border: const UnderlineInputBorder(),
             labelText: "Enter the server's endpoint",
-            errorText: _inputHasError ? 'Invalid endpoint!' : null),
+            errorText: _inputHasError ? _errorMessage : null),
       ),
       actions: <Widget>[
         TextButton(
@@ -45,24 +49,27 @@ class _RegisterDeviceToServerState extends State<RegisterDeviceToServer> {
               if (!isValidUrl) {
                 setState(() {
                   _inputHasError = true;
+                  _errorMessage = 'Invalid endpoint!';
                 });
 
                 return;
               }
 
               HttpClient.setBaseEndPoint(_controller.text);
-              //
-              // // TODO: Move this to top level. Battery level must always be updated
-              // final device = Device(
-              //     deviceId: DeviceInfo.deviceId,
-              //     deviceName: await DeviceInfo.deviceName,
-              //     batteryLevel: (await BatteryModule.batteryLevel).toString());
-              //
-              // final success = await HttpClient.registerDevice(device);
-              //
-              // if (!success) {
-              //   return;
-              // }
+
+              // TODO: Move this to top level. Battery level must always be updated
+              final device = Device(
+                  deviceId: DeviceInfo.deviceId,
+                  deviceName: await DeviceInfo.deviceName,
+                  batteryLevel: (await BatteryModule.batteryLevel).toString());
+
+              final responseResult = await HttpClient.registerDevice(device);
+
+              if (!responseResult.success) {
+                _errorMessage = responseResult.message;
+                _inputHasError = true;
+                return;
+              }
 
               Navigator.of(context).pop();
             },

@@ -10,4 +10,6 @@ class ServiceCode {
   static const String parameterValidationError = '230';
   static const String fieldEmpty = '231';
   static const String invalidBatteryRange = '232';
+
+  static const String cannotConnectToServer = '999';
 }

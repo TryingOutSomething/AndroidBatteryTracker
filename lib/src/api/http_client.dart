@@ -1,9 +1,9 @@
 import 'dart:convert';
 
-import 'package:client_dart/api/helpers/service_codes.dart';
-import 'package:client_dart/api/routes.dart';
 import 'package:http/http.dart' as http;
 
+import '../api/helpers/service_codes.dart';
+import '../api/routes.dart';
 import 'dtos/device.dart';
 import 'dtos/response.dart';
 

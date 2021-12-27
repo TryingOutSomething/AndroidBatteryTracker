@@ -1,8 +1,9 @@
-import 'package:client_dart/api/dtos/device.dart';
-import 'package:client_dart/api/http_client.dart';
-import 'package:client_dart/battery/services/battery_module.dart';
-import 'package:client_dart/device/services/device_info.dart';
 import 'package:flutter/material.dart';
+
+import '../../api/dtos/device.dart';
+import '../../api/http_client.dart';
+import '../../battery/services/battery_module.dart';
+import '../../device/services/device_info.dart';
 
 class RegisterDeviceToServer extends StatefulWidget {
   const RegisterDeviceToServer({Key? key}) : super(key: key);

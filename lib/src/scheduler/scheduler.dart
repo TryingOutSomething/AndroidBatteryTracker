@@ -4,7 +4,7 @@ import 'package:battery_plus/battery_plus.dart';
 import 'package:flutter_background/flutter_background.dart';
 
 import '../battery/services/battery_module.dart';
-import 'background_process_handler.dart';
+import 'background/process_handler.dart';
 
 typedef TimerCallback = Function(Timer timer);
 

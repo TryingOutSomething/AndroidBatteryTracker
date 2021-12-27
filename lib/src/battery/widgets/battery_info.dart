@@ -1,8 +1,8 @@
 import 'dart:async';
 
-import 'package:client_dart/battery/widgets/charging_state.dart';
 import 'package:flutter/material.dart';
 
+import '../../battery/widgets/charging_state.dart';
 import '../../scheduler/scheduler.dart';
 import '../services/battery_module.dart';
 

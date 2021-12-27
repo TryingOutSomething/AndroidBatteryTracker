@@ -22,14 +22,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
 
-    showRegisterDeviceDialog();
-  }
-
-  void showRegisterDeviceDialog() {
-    Future(() => showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (_) => const RegisterDeviceToServer()));
+    showRegisterDeviceDialog(context);
   }
 
   Future<void> showErrorAlertDialog(String error) async {
@@ -55,7 +48,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 onPressed: () => _scheduler.cancelAllTasks(),
                 child: const Text('Stop this shit')),
             ElevatedButton(
-                onPressed: () => showRegisterDeviceDialog(),
+                onPressed: () => showRegisterDeviceDialog(context),
                 child: const Text('Popup'))
           ],
         ),

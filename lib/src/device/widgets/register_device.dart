@@ -1,5 +1,14 @@
 import 'package:flutter/material.dart';
 
+import '../../api/http_client.dart';
+
+void showRegisterDeviceDialog(BuildContext context) {
+  Future(() => showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => const RegisterDeviceToServer()));
+}
+
 class RegisterDeviceToServer extends StatefulWidget {
   const RegisterDeviceToServer({Key? key}) : super(key: key);
 
@@ -9,6 +18,7 @@ class RegisterDeviceToServer extends StatefulWidget {
 
 class _RegisterDeviceToServerState extends State<RegisterDeviceToServer> {
   final _controller = TextEditingController();
+  bool _inputHasError = false;
 
   @override
   void dispose() {
@@ -22,20 +32,25 @@ class _RegisterDeviceToServerState extends State<RegisterDeviceToServer> {
       title: const Text('Server Connection'),
       content: TextField(
         controller: _controller,
-        decoration: const InputDecoration(
-            border: UnderlineInputBorder(),
-            labelText: "Enter the server's endpoint"),
+        decoration: InputDecoration(
+            border: const UnderlineInputBorder(),
+            labelText: "Enter the server's endpoint",
+            errorText: _inputHasError ? 'Invalid endpoint!' : null),
       ),
       actions: <Widget>[
         TextButton(
             onPressed: () async {
-              // final isValidUrl = HttpClient.isValidUrl(_controller.text);
-              //
-              // if (!isValidUrl) {
-              //   return;
-              // }
-              //
-              // HttpClient.setBaseEndPoint(_controller.text);
+              final isValidUrl = HttpClient.isValidUrl(_controller.text);
+
+              if (!isValidUrl) {
+                setState(() {
+                  _inputHasError = true;
+                });
+
+                return;
+              }
+
+              HttpClient.setBaseEndPoint(_controller.text);
               //
               // // TODO: Move this to top level. Battery level must always be updated
               // final device = Device(

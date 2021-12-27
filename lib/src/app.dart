@@ -1,3 +1,4 @@
+import 'package:client_dart/src/error_alert.dart';
 import 'package:flutter/material.dart';
 
 import 'battery/widgets/battery_info.dart';
@@ -29,6 +30,10 @@ class _MyHomePageState extends State<MyHomePage> {
         context: context,
         barrierDismissible: false,
         builder: (_) => const RegisterDeviceToServer()));
+  }
+
+  Future<void> showErrorAlertDialog(String error) async {
+    showDialog(context: context, builder: (_) => ErrorAlert(error: error));
   }
 
   @override

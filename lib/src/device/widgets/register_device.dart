@@ -49,7 +49,7 @@ class _RegisterDeviceToServerState extends State<RegisterDeviceToServer> {
               //   return;
               // }
 
-              Navigator.pop(context);
+              Navigator.of(context).pop();
             },
             child: const Text('Register Device'))
       ],

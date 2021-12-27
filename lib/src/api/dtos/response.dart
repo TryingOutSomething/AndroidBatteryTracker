@@ -16,11 +16,11 @@ class ResponseResult {
         message: customMessage ?? response['message']);
   }
 
-  factory ResponseResult.connectionError(String serviceCode,
+  factory ResponseResult.unexpectedError(String serviceCode,
       [String? message]) {
     return ResponseResult(
         success: false,
         serviceCode: serviceCode,
-        message: message ?? 'Unable to connect to server!');
+        message: message ?? 'Unexpected error occurred!');
   }
 }

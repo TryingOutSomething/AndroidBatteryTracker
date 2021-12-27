@@ -12,4 +12,5 @@ class ServiceCode {
   static const String invalidBatteryRange = '232';
 
   static const String cannotConnectToServer = '999';
+  static const String unexpectedError = '998';
 }

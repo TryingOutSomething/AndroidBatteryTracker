@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -10,6 +11,8 @@ import 'dtos/response.dart';
 
 class HttpClient {
   static String? _baseEndpoint;
+  static const String _cannotConnectToServerMessage =
+      'Unable to connect to server';
   static const Map<String, String> _headers = {
     'Content-type': 'application/json; charset=UTF-8'
   };
@@ -35,14 +38,22 @@ class HttpClient {
 
   static Future<ResponseResult> registerDevice(Device device) async {
     try {
-      final response = await http.post(
-          Uri.parse(_baseEndpoint! + ApiRoutes.registerDevice),
-          headers: _headers,
-          body: jsonEncode(device.toJson()));
+      final response = await http
+          .post(Uri.parse(_baseEndpoint! + ApiRoutes.registerDevice),
+              headers: _headers, body: jsonEncode(device.toJson()))
+          .timeout(const Duration(seconds: 3));
 
       return ResponseResult.fromJson(response, true);
     } on SocketException {
-      return ResponseResult.connectionError(ServiceCode.cannotConnectToServer);
+      return ResponseResult.unexpectedError(
+          ServiceCode.cannotConnectToServer, _cannotConnectToServerMessage);
+    } on TimeoutException {
+      return ResponseResult.unexpectedError(
+          ServiceCode.cannotConnectToServer, _cannotConnectToServerMessage);
+    } catch (e) {
+      print(e.toString());
+      return ResponseResult.unexpectedError(
+          ServiceCode.unexpectedError, e.toString());
     }
   }
 
@@ -56,7 +67,15 @@ class HttpClient {
 
       return ResponseResult.fromJson(response, true);
     } on SocketException {
-      return ResponseResult.connectionError(ServiceCode.cannotConnectToServer);
+      return ResponseResult.unexpectedError(
+          ServiceCode.cannotConnectToServer, _cannotConnectToServerMessage);
+    } on TimeoutException {
+      return ResponseResult.unexpectedError(
+          ServiceCode.cannotConnectToServer, _cannotConnectToServerMessage);
+    } catch (e) {
+      print(e.toString());
+      return ResponseResult.unexpectedError(
+          ServiceCode.unexpectedError, e.toString());
     }
   }
 
@@ -70,7 +89,15 @@ class HttpClient {
 
       return ResponseResult.fromJson(response, true);
     } on SocketException {
-      return ResponseResult.connectionError(ServiceCode.cannotConnectToServer);
+      return ResponseResult.unexpectedError(
+          ServiceCode.cannotConnectToServer, _cannotConnectToServerMessage);
+    } on TimeoutException {
+      return ResponseResult.unexpectedError(
+          ServiceCode.cannotConnectToServer, _cannotConnectToServerMessage);
+    } catch (e) {
+      print(e.toString());
+      return ResponseResult.unexpectedError(
+          ServiceCode.unexpectedError, e.toString());
     }
   }
 }

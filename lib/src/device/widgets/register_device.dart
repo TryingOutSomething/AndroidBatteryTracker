@@ -62,8 +62,8 @@ class _RegisterDeviceToServerState extends State<RegisterDeviceToServer> {
 
     if (!isValidUrl) {
       setState(() {
-        _inputHasError = true;
         _errorMessage = 'Invalid endpoint!';
+        _inputHasError = true;
       });
 
       return false;
@@ -79,8 +79,10 @@ class _RegisterDeviceToServerState extends State<RegisterDeviceToServer> {
     final responseResult = await HttpClient.registerDevice(device);
 
     if (!responseResult.success) {
-      _errorMessage = responseResult.message;
-      _inputHasError = true;
+      setState(() {
+        _errorMessage = responseResult.message;
+        _inputHasError = true;
+      });
       return false;
     }
 

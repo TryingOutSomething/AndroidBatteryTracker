@@ -1,18 +1,25 @@
 import 'dart:async';
 
 import 'package:battery_plus/battery_plus.dart';
+import 'package:client_dart/src/api/dtos/response.dart';
+import 'package:client_dart/src/api/helpers/service_codes.dart';
+import 'package:client_dart/src/api/http_client.dart';
 import 'package:flutter_background/flutter_background.dart';
 
+import '../api/dtos/device.dart';
 import '../battery/services/battery_module.dart';
+import '../device/services/device_info.dart';
 import 'background/process_handler.dart';
 
 typedef TimerCallback = Function(Timer timer);
+typedef ErrorMessageCallback = Function(String error);
 
 class Scheduler {
   late Timer _periodicTimer;
   late ProcessHandler _handler;
+  late final ErrorMessageCallback _onErrorCallback;
 
-  Scheduler() {
+  Scheduler({required ErrorMessageCallback onErrorCallback}) {
     FlutterBackgroundAndroidConfig config =
         const FlutterBackgroundAndroidConfig(
             notificationTitle: 'background',
@@ -20,6 +27,7 @@ class Scheduler {
             notificationImportance: AndroidNotificationImportance.Default);
 
     _handler = BackgroundProcessHandler(config);
+    _onErrorCallback = onErrorCallback;
   }
 
   void startTask({required Duration duration}) {
@@ -29,10 +37,45 @@ class Scheduler {
     BatteryModule.registerCallback(BatteryState.discharging, cancelAllTasks);
     BatteryModule.subscribeToBatteryStateChange();
 
-    _periodicTimer = createPeriodicTimer(duration, (timer) async {
-      int batteryLevel = await BatteryModule.batteryLevel;
-      // TODO: Perform http request to server;
-    });
+    _periodicTimer = createPeriodicTimer(duration, _emitBatteryInfoToServer);
+  }
+
+  Future<void> _emitBatteryInfoToServer(Timer timer) async {
+    final device = DeviceBatteryInfo(
+        deviceId: DeviceInfo.deviceId,
+        batteryLevel: (await BatteryModule.batteryLevel).toString());
+
+    final responseResult = await HttpClient.emitBatteryLevel(device);
+
+    if (responseResult.success) {
+      return;
+    }
+
+    _handleError(responseResult);
+  }
+
+  void _handleError(ResponseResult result) {
+    // TODO: activate error alert
+    switch (result.serviceCode) {
+      case ServiceCode.batteryLevelError:
+        _onErrorCallback('');
+        break;
+      case ServiceCode.invalidBatteryRange:
+        _onErrorCallback('');
+        break;
+      case ServiceCode.fieldEmpty:
+        _onErrorCallback('');
+        break;
+      case ServiceCode.parameterValidationError:
+        _onErrorCallback('');
+        break;
+      case ServiceCode.unexpectedError:
+        _onErrorCallback('');
+        break;
+      case ServiceCode.cannotConnectToServer:
+        _onErrorCallback('');
+        break;
+    }
   }
 
   void cancelAllTasks() {

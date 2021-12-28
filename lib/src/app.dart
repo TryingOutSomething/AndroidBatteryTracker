@@ -15,7 +15,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final Scheduler _scheduler = Scheduler();
   final Duration _refreshInterval = const Duration(seconds: 5);
 
   @override
@@ -26,11 +25,15 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<void> showErrorAlertDialog(String error) async {
+    // print(WidgetsBinding.instance?.lifecycleState);
     showDialog(context: context, builder: (_) => ErrorAlert(error: error));
   }
 
   @override
   Widget build(BuildContext context) {
+    final Scheduler _scheduler =
+        Scheduler(onErrorCallback: showErrorAlertDialog);
+
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
@@ -48,7 +51,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 onPressed: () => _scheduler.cancelAllTasks(),
                 child: const Text('Stop this shit')),
             ElevatedButton(
-                onPressed: () => showRegisterDeviceDialog(context),
+                // onPressed: () => showRegisterDeviceDialog(context),
+                onPressed: () => showErrorAlertDialog('error'),
                 child: const Text('Popup'))
           ],
         ),

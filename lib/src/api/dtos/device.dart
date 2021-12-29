@@ -11,7 +11,7 @@ class Device {
   Map<String, dynamic> toJson() => {
         'device_id': deviceId,
         'device_name': deviceName,
-        'batteryLevel': batteryLevel,
+        'battery_level': batteryLevel,
       };
 }
 

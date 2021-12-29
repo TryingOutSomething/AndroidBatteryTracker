@@ -45,7 +45,7 @@ class HttpClient {
               headers: _headers, body: jsonEncode(device.toJson()))
           .timeout(const Duration(seconds: 3));
 
-      return ResponseResult.fromJson(response, true);
+      return ResponseResult.fromJson(jsonDecode(response.body), true);
     } on SocketException {
       return ResponseResult.unexpectedError(
           ServiceCode.cannotConnectToServer, _cannotConnectToServerMessage);
@@ -66,7 +66,7 @@ class HttpClient {
           headers: _headers,
           body: jsonEncode(device.toJson()));
 
-      return ResponseResult.fromJson(response, true);
+      return ResponseResult.fromJson(jsonDecode(response.body), true);
     } on SocketException {
       return ResponseResult.unexpectedError(
           ServiceCode.cannotConnectToServer, _cannotConnectToServerMessage);
@@ -87,7 +87,7 @@ class HttpClient {
           headers: _headers,
           body: jsonEncode(deviceBatteryInfo));
 
-      return ResponseResult.fromJson(response, true);
+      return ResponseResult.fromJson(jsonDecode(response.body), true);
     } on SocketException {
       return ResponseResult.unexpectedError(
           ServiceCode.cannotConnectToServer, _cannotConnectToServerMessage);

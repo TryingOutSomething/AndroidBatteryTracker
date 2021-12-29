@@ -52,29 +52,19 @@ class Scheduler {
     }
 
     _handleError(responseResult);
+    timer.cancel();
   }
 
   void _handleError(ResponseResult result) {
-    // TODO: activate error alert
     switch (result.serviceCode) {
-      case ServiceCode.batteryLevelError:
-        _onErrorCallback('');
-        break;
-      case ServiceCode.invalidBatteryRange:
-        _onErrorCallback('');
-        break;
-      case ServiceCode.fieldEmpty:
-        _onErrorCallback('');
-        break;
-      case ServiceCode.parameterValidationError:
-        _onErrorCallback('');
-        break;
       case ServiceCode.unexpectedError:
-        _onErrorCallback('');
+        _onErrorCallback('Unexpected error occurred. Try again later');
         break;
       case ServiceCode.cannotConnectToServer:
-        _onErrorCallback('');
+        _onErrorCallback('Unable to connect to server! Try again later.');
         break;
+      default:
+        _onErrorCallback(result.message);
     }
   }
 

@@ -25,7 +25,6 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<void> showErrorAlertDialog(String error) async {
-    // print(WidgetsBinding.instance?.lifecycleState);
     showDialog(context: context, builder: (_) => ErrorAlert(error: error));
   }
 
@@ -51,8 +50,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 onPressed: () => _scheduler.cancelAllTasks(),
                 child: const Text('Stop this shit')),
             ElevatedButton(
-                // onPressed: () => showRegisterDeviceDialog(context),
-                onPressed: () => showErrorAlertDialog('error'),
+                onPressed: () => showRegisterDeviceDialog(context),
                 child: const Text('Popup'))
           ],
         ),

@@ -5,9 +5,9 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 
 import '../api/helpers/service_codes.dart';
-import '../api/routes.dart';
 import 'dtos/device.dart';
 import 'dtos/response.dart';
+import 'helpers/routes.dart';
 
 class HttpClient {
   static String? _baseEndpoint;

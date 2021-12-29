@@ -26,7 +26,9 @@ class Scheduler {
             notificationText: 'Tracking in progress...',
             notificationImportance: AndroidNotificationImportance.Default);
 
-    _handler = BackgroundProcessHandler(config);
+    _handler = BackgroundProcessHandler(
+        config: config, onErrorCallback: _onErrorCallback);
+
     _onErrorCallback = onErrorCallback;
   }
 

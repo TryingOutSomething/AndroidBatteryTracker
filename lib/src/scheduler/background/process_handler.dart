@@ -8,11 +8,17 @@ abstract class ProcessHandler {
   void stopBackgroundProcessing();
 }
 
-class BackgroundProcessHandler implements ProcessHandler {
-  late FlutterBackgroundAndroidConfig _config;
+typedef ErrorMessageCallback = Function(String error);
 
-  BackgroundProcessHandler(FlutterBackgroundAndroidConfig config) {
+class BackgroundProcessHandler implements ProcessHandler {
+  late final FlutterBackgroundAndroidConfig _config;
+  late final ErrorMessageCallback _onErrorCallback;
+
+  BackgroundProcessHandler(
+      {required FlutterBackgroundAndroidConfig config,
+      required ErrorMessageCallback onErrorCallback}) {
     _config = config;
+    _onErrorCallback = onErrorCallback;
 
     initialiseBackgroundProcess();
   }
@@ -21,12 +27,11 @@ class BackgroundProcessHandler implements ProcessHandler {
   void startBackgroundProcess() async {
     bool success = await FlutterBackground.enableBackgroundExecution();
 
-    if (!success) {
-      print('cannot allow background exe');
+    if (success) {
       return;
     }
 
-    print('done');
+    _onErrorCallback('Unable to start service in background.');
   }
 
   @override
@@ -40,13 +45,7 @@ class BackgroundProcessHandler implements ProcessHandler {
 
   @override
   void initialiseBackgroundProcess() async {
-    bool hasPermission = await FlutterBackground.hasPermissions;
-
-    if (!hasPermission) {
-      print('enable perms');
-      // TODO: Add notification to prompt enable notifications
-    }
-
+    await FlutterBackground.hasPermissions;
     await FlutterBackground.initialize(androidConfig: _config);
   }
 }

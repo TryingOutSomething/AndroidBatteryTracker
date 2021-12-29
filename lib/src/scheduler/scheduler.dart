@@ -27,7 +27,7 @@ class Scheduler {
             notificationImportance: AndroidNotificationImportance.Default);
 
     _handler = BackgroundProcessHandler(
-        config: config, onErrorCallback: _onErrorCallback);
+        config: config, onErrorCallback: onErrorCallback);
 
     _onErrorCallback = onErrorCallback;
   }

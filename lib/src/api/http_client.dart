@@ -27,6 +27,8 @@ class HttpClient {
     return true;
   }
 
+  static void clearBaseEndpoint() => _baseEndpoint = '';
+
   static bool isValidUrl(String url) {
     if (url == '') return false;
 
@@ -51,7 +53,6 @@ class HttpClient {
       return ResponseResult.unexpectedError(
           ServiceCode.cannotConnectToServer, _cannotConnectToServerMessage);
     } catch (e) {
-      print(e.toString());
       return ResponseResult.unexpectedError(
           ServiceCode.unexpectedError, e.toString());
     }
@@ -73,7 +74,6 @@ class HttpClient {
       return ResponseResult.unexpectedError(
           ServiceCode.cannotConnectToServer, _cannotConnectToServerMessage);
     } catch (e) {
-      print(e.toString());
       return ResponseResult.unexpectedError(
           ServiceCode.unexpectedError, e.toString());
     }
@@ -95,7 +95,6 @@ class HttpClient {
       return ResponseResult.unexpectedError(
           ServiceCode.cannotConnectToServer, _cannotConnectToServerMessage);
     } catch (e) {
-      print(e.toString());
       return ResponseResult.unexpectedError(
           ServiceCode.unexpectedError, e.toString());
     }

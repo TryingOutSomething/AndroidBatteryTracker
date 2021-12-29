@@ -45,13 +45,16 @@ class _MyHomePageState extends State<MyHomePage> {
             ElevatedButton(
                 onPressed: () =>
                     _scheduler.startTask(duration: _refreshInterval),
-                child: const Text('Request this shit')),
+                child: const Text('Start Tracking Battery Level')),
             ElevatedButton(
                 onPressed: () => _scheduler.cancelAllTasks(),
-                child: const Text('Stop this shit')),
+                child: const Text('Stop Tracking Battery Level')),
             ElevatedButton(
-                onPressed: () => showRegisterDeviceDialog(context),
-                child: const Text('Popup'))
+                onPressed: () {
+                  _scheduler.cancelAllTasks();
+                  showRegisterDeviceDialog(context);
+                },
+                child: const Text('Unregister Device From Server'))
           ],
         ),
       ),

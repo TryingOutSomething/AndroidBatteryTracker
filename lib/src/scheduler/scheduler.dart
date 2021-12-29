@@ -22,8 +22,8 @@ class Scheduler {
   Scheduler({required ErrorMessageCallback onErrorCallback}) {
     FlutterBackgroundAndroidConfig config =
         const FlutterBackgroundAndroidConfig(
-            notificationTitle: 'background',
-            notificationText: 'running',
+            notificationTitle: 'Tracking battery level',
+            notificationText: 'Tracking in progress...',
             notificationImportance: AndroidNotificationImportance.Default);
 
     _handler = BackgroundProcessHandler(config);
@@ -77,6 +77,10 @@ class Scheduler {
     BatteryModule.unsubscribeBatteryStateChanges();
     BatteryModule.unregisterCallbacksFromAllStates();
     _periodicTimer.cancel();
+
+    final device = UnregisterDevice(deviceId: DeviceInfo.deviceId);
+    HttpClient.unregisterDevice(device);
+    HttpClient.clearBaseEndpoint();
   }
 
   static Timer createPeriodicTimer(Duration duration, TimerCallback callback) {

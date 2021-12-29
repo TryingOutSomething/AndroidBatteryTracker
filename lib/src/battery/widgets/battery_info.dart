@@ -6,11 +6,19 @@ import '../../battery/widgets/charging_state.dart';
 import '../../scheduler/scheduler.dart';
 import '../services/battery_module.dart';
 
+typedef DeviceIsChargingCallback = Function(bool status);
+
 class BatteryInfo extends StatefulWidget {
   late final Duration _refreshInterval;
+  late final DeviceIsChargingCallback _onChargingDevice;
 
-  BatteryInfo(Duration duration, {Key? key}) : super(key: key) {
-    _refreshInterval = duration;
+  BatteryInfo(
+      {Key? key,
+      required Duration refreshInterval,
+      required DeviceIsChargingCallback onChargingDevice})
+      : super(key: key) {
+    _refreshInterval = refreshInterval;
+    _onChargingDevice = onChargingDevice;
   }
 
   @override
@@ -75,7 +83,7 @@ class _BatteryInfoState extends State<BatteryInfo> with WidgetsBindingObserver {
 
               return const CircularProgressIndicator();
             }),
-        const BatteryChargingStatus()
+        BatteryChargingStatus(onChargingDevice: widget._onChargingDevice)
       ],
     );
   }

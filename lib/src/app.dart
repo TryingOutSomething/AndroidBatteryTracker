@@ -16,6 +16,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final Duration _refreshInterval = const Duration(seconds: 5);
+  bool _isCharging = false;
 
   @override
   void initState() {
@@ -26,6 +27,12 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future<void> showErrorAlertDialog(String error) async {
     showDialog(context: context, builder: (_) => ErrorAlert(error: error));
+  }
+
+  void _togglePeriodicTaskButtons(bool deviceIsCharging) {
+    setState(() {
+      _isCharging = deviceIsCharging;
+    });
   }
 
   @override
@@ -41,7 +48,10 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            BatteryInfo(_refreshInterval),
+            BatteryInfo(
+              refreshInterval: _refreshInterval,
+              onChargingDevice: _togglePeriodicTaskButtons,
+            ),
             ElevatedButton(
                 onPressed: () =>
                     _scheduler.startTask(duration: _refreshInterval),

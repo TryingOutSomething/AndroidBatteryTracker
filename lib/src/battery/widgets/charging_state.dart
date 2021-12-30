@@ -6,13 +6,7 @@ import '../services/battery_module.dart';
 typedef DeviceIsChargingCallback = Function(bool status);
 
 class BatteryChargingStatus extends StatefulWidget {
-  late final DeviceIsChargingCallback _onChargingDevice;
-
-  BatteryChargingStatus(
-      {Key? key, required DeviceIsChargingCallback onChargingDevice})
-      : super(key: key) {
-    _onChargingDevice = onChargingDevice;
-  }
+  const BatteryChargingStatus({Key? key}) : super(key: key);
 
   @override
   _BatteryChargingStatusState createState() => _BatteryChargingStatusState();
@@ -28,16 +22,17 @@ class _BatteryChargingStatusState extends State<BatteryChargingStatus> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-        stream: BatteryModule.chargingStatus,
+        stream: BatteryModule.chargingStatusStream,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             String dataString = snapshot.data.toString();
             String capitalisedStatus = _getStatusFromEnum(dataString);
-            widget._onChargingDevice(_phoneIsCharging(dataString));
+            BatteryModule.chargingStatus = _toEnum(dataString);
 
             return Text(capitalisedStatus);
           }
 
+          BatteryModule.chargingStatus = BatteryState.unknown;
           return const CircularProgressIndicator();
         });
   }
@@ -49,10 +44,8 @@ class _BatteryChargingStatusState extends State<BatteryChargingStatus> {
     return capitalisedStatus;
   }
 
-  bool _phoneIsCharging(String snapshotDataString) {
-    BatteryState state = BatteryState.values
+  BatteryState _toEnum(String snapshotDataString) {
+    return BatteryState.values
         .firstWhere((e) => e.toString() == snapshotDataString);
-
-    return state == BatteryState.charging;
   }
 }

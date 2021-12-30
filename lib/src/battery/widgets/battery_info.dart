@@ -10,15 +10,9 @@ typedef DeviceIsChargingCallback = Function(bool status);
 
 class BatteryInfo extends StatefulWidget {
   late final Duration _refreshInterval;
-  late final DeviceIsChargingCallback _onChargingDevice;
 
-  BatteryInfo(
-      {Key? key,
-      required Duration refreshInterval,
-      required DeviceIsChargingCallback onChargingDevice})
-      : super(key: key) {
+  BatteryInfo({Key? key, required Duration refreshInterval}) : super(key: key) {
     _refreshInterval = refreshInterval;
-    _onChargingDevice = onChargingDevice;
   }
 
   @override
@@ -83,7 +77,7 @@ class _BatteryInfoState extends State<BatteryInfo> with WidgetsBindingObserver {
 
               return const CircularProgressIndicator();
             }),
-        BatteryChargingStatus(onChargingDevice: widget._onChargingDevice)
+        const BatteryChargingStatus()
       ],
     );
   }

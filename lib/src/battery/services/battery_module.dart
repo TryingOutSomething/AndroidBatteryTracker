@@ -11,13 +11,23 @@ class BatteryModule {
     BatteryState.unknown: <Function>[],
   };
 
-  static StreamSubscription? _chargingStateController;
+  static StreamSubscription? _chargingStateSubscription;
+  static bool _chargingStateIsSubscribed = false;
+  static BatteryState _chargingStatus = BatteryState.unknown;
 
   static Future<int> get batteryLevel async => await _instance.batteryLevel;
 
-  static Stream get chargingStatus => _instance.onBatteryStateChanged;
+  static Stream get chargingStatusStream => _instance.onBatteryStateChanged;
+
+  static set chargingStatus(BatteryState state) => _chargingStatus = state;
+
+  static bool get isChargingState => _chargingStatus == BatteryState.charging;
 
   static void registerCallback(BatteryState state, Function callback) {
+    if (_stateCallbackMap[state]!.contains(callback)) {
+      return;
+    }
+
     _stateCallbackMap[state]?.add(callback);
   }
 
@@ -38,13 +48,19 @@ class BatteryModule {
   }
 
   static void subscribeToBatteryStateChange() {
-    _chargingStateController =
+    _chargingStateSubscription =
         _instance.onBatteryStateChanged.listen((BatteryState state) {
       _invokeStateCallbacks(state);
     });
+
+    _chargingStateIsSubscribed = true;
   }
 
   static void unsubscribeBatteryStateChanges() {
-    _chargingStateController?.cancel();
+    if (!_chargingStateIsSubscribed) {
+      return;
+    }
+    _chargingStateSubscription?.cancel();
+    _chargingStateIsSubscribed = false;
   }
 }

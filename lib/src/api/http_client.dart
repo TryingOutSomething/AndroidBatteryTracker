@@ -61,7 +61,7 @@ class HttpClient {
   static Future<ResponseResult> unregisterDevice(
       UnregisterDevice device) async {
     try {
-      final response = await http.post(
+      final response = await http.delete(
           Uri.parse(_baseEndpoint! + ApiRoutes.unregisterDevice),
           headers: _headers,
           body: jsonEncode(device.toJson()));

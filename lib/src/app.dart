@@ -1,3 +1,4 @@
+import 'package:client_dart/src/battery/services/battery_module.dart';
 import 'package:client_dart/src/error_alert.dart';
 import 'package:flutter/material.dart';
 
@@ -16,10 +17,13 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final Duration _refreshInterval = const Duration(seconds: 5);
-  bool _isCharging = false;
+  late Scheduler _scheduler;
+  bool _taskStarted = false;
 
   @override
   void initState() {
+    _scheduler = Scheduler(onErrorCallback: showErrorAlertDialog);
+
     super.initState();
 
     showRegisterDeviceDialog(context);
@@ -29,17 +33,14 @@ class _MyHomePageState extends State<MyHomePage> {
     showDialog(context: context, builder: (_) => ErrorAlert(error: error));
   }
 
-  void _togglePeriodicTaskButtons(bool deviceIsCharging) {
+  void _toggleTaskButtonStates() {
     setState(() {
-      _isCharging = deviceIsCharging;
+      _taskStarted = !_taskStarted;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final Scheduler _scheduler =
-        Scheduler(onErrorCallback: showErrorAlertDialog);
-
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
@@ -48,23 +49,40 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            BatteryInfo(
-              refreshInterval: _refreshInterval,
-              onChargingDevice: _togglePeriodicTaskButtons,
+            BatteryInfo(refreshInterval: _refreshInterval),
+            ElevatedButton(
+              onPressed: !_taskStarted
+                  ? () {
+                      if (!BatteryModule.isChargingState) {
+                        showErrorAlertDialog(
+                            'Ensure device is charging before tracking battery level!');
+                        return;
+                      }
+                      _scheduler.startTask(duration: _refreshInterval);
+                      _toggleTaskButtonStates();
+                    }
+                  : null,
+              child: const Text('Start Tracking Battery Level'),
             ),
             ElevatedButton(
-                onPressed: () =>
-                    _scheduler.startTask(duration: _refreshInterval),
-                child: const Text('Start Tracking Battery Level')),
+              onPressed: _taskStarted
+                  ? () {
+                      _scheduler.pauseTask();
+                      _toggleTaskButtonStates();
+                    }
+                  : null,
+              child: const Text('Stop Tracking Battery Level'),
+            ),
             ElevatedButton(
-                onPressed: () => _scheduler.cancelAllTasks(),
-                child: const Text('Stop Tracking Battery Level')),
-            ElevatedButton(
-                onPressed: () {
-                  _scheduler.cancelAllTasks();
-                  showRegisterDeviceDialog(context);
-                },
-                child: const Text('Unregister Device From Server'))
+              onPressed: _taskStarted
+                  ? () {
+                      _scheduler.stopTask();
+                      _toggleTaskButtonStates();
+                      showRegisterDeviceDialog(context);
+                    }
+                  : null,
+              child: const Text('Unregister Device From Server'),
+            )
           ],
         ),
       ),

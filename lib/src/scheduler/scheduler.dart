@@ -33,12 +33,11 @@ class Scheduler {
   }
 
   void startTask({required Duration duration}) {
-    _handler.startBackgroundProcess();
-
-    BatteryModule.registerCallback(BatteryState.full, cancelAllTasks);
-    BatteryModule.registerCallback(BatteryState.discharging, cancelAllTasks);
+    BatteryModule.registerCallback(BatteryState.full, pauseTask);
+    BatteryModule.registerCallback(BatteryState.discharging, pauseTask);
     BatteryModule.subscribeToBatteryStateChange();
 
+    _handler.startBackgroundProcess();
     _periodicTimer = createPeriodicTimer(duration, _emitBatteryInfoToServer);
   }
 
@@ -54,7 +53,7 @@ class Scheduler {
     }
 
     _handleError(responseResult);
-    timer.cancel();
+    _stopPeriodicTask(timer);
   }
 
   void _handleError(ResponseResult result) {
@@ -70,19 +69,24 @@ class Scheduler {
     }
   }
 
-  void cancelAllTasks() {
-    _handler.stopBackgroundProcessing();
-    _cancelPeriodicTask();
+  void pauseTask() {
+    _stopPeriodicTask(_periodicTimer);
   }
 
-  void _cancelPeriodicTask() {
-    BatteryModule.unsubscribeBatteryStateChanges();
+  void stopTask() {
+    _stopPeriodicTask(_periodicTimer);
     BatteryModule.unregisterCallbacksFromAllStates();
-    _periodicTimer.cancel();
 
     final device = UnregisterDevice(deviceId: DeviceInfo.deviceId);
     HttpClient.unregisterDevice(device);
     HttpClient.clearBaseEndpoint();
+  }
+
+  void _stopPeriodicTask(Timer timer) {
+    _handler.stopBackgroundProcessing();
+    BatteryModule.unsubscribeBatteryStateChanges();
+
+    timer.cancel();
   }
 
   static Timer createPeriodicTimer(Duration duration, TimerCallback callback) {

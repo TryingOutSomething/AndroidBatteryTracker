@@ -1,9 +1,9 @@
-import 'package:client_dart/src/battery/services/battery_module.dart';
-import 'package:client_dart/src/error_alert.dart';
 import 'package:flutter/material.dart';
 
+import 'battery/services/battery_module.dart';
 import 'battery/widgets/battery_info.dart';
 import 'device/widgets/register_device.dart';
+import 'error_alert.dart';
 import 'scheduler/scheduler.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -16,6 +16,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  int _backPressedCounter = 0;
   final Duration _refreshInterval = const Duration(seconds: 5);
   late Scheduler _scheduler;
   bool _taskStarted = false;
@@ -49,29 +50,40 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            BatteryInfo(refreshInterval: _refreshInterval),
-            ElevatedButton(
-              onPressed:
-                  !_taskStarted ? () => _startTrackingDeviceBattery() : null,
-              child: const Text('Start Tracking Battery Level'),
-            ),
-            ElevatedButton(
-              onPressed: _taskStarted ? () => _pauseTask() : null,
-              child: const Text('Stop Tracking Battery Level'),
-            ),
-            ElevatedButton(
-              onPressed: () => _stopTaskAndUnregisterDevice(),
-              child: const Text('Unregister Device From Server'),
-            )
-          ],
+    return WillPopScope(
+      onWillPop: () async {
+        final canExitApp = _promptExitApp(context);
+
+        if (canExitApp) {
+          _scheduler.stopTask();
+        }
+
+        return canExitApp;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(widget.title),
+        ),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              BatteryInfo(refreshInterval: _refreshInterval),
+              ElevatedButton(
+                onPressed:
+                    !_taskStarted ? () => _startTrackingDeviceBattery() : null,
+                child: const Text('Start Tracking Battery Level'),
+              ),
+              ElevatedButton(
+                onPressed: _taskStarted ? () => _pauseTask() : null,
+                child: const Text('Stop Tracking Battery Level'),
+              ),
+              ElevatedButton(
+                onPressed: () => _stopTaskAndUnregisterDevice(),
+                child: const Text('Unregister Device From Server'),
+              )
+            ],
+          ),
         ),
       ),
     );
@@ -99,5 +111,20 @@ class _MyHomePageState extends State<MyHomePage> {
   void _stopTaskAndUnregisterDevice() {
     _scheduler.stopTask();
     showRegisterDeviceDialog(context);
+  }
+
+  bool _promptExitApp(BuildContext context) {
+    ++_backPressedCounter;
+
+    if (_backPressedCounter >= 2) return true;
+
+    const snackBar = SnackBar(
+      content: Text('Press Back Button again to Exit'),
+      duration: Duration(seconds: 2),
+    );
+
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
+    return false;
   }
 }

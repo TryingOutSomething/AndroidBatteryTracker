@@ -22,14 +22,14 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void initState() {
-    _scheduler = Scheduler(onErrorCallback: showErrorAlertDialog);
+    _scheduler = Scheduler(onErrorCallback: _showErrorAlertDialog);
 
     super.initState();
 
     showRegisterDeviceDialog(context);
   }
 
-  Future<void> showErrorAlertDialog(String error) async {
+  Future<void> _showErrorAlertDialog(String error) async {
     showDialog(context: context, builder: (_) => ErrorAlert(error: error));
   }
 
@@ -59,40 +59,45 @@ class _MyHomePageState extends State<MyHomePage> {
           children: <Widget>[
             BatteryInfo(refreshInterval: _refreshInterval),
             ElevatedButton(
-              onPressed: !_taskStarted
-                  ? () {
-                if (!BatteryModule.isChargingState) {
-                        showErrorAlertDialog(
-                            'Ensure device is charging before tracking battery level!');
-                        return;
-                      }
-
-                      _scheduler.startTask(
-                        duration: _refreshInterval,
-                        onStopTaskCallback: _setTaskStoppedStatus,
-                      );
-
-                      _setTaskStartedStatus();
-                    }
-                  : null,
+              onPressed:
+                  !_taskStarted ? () => _startTrackingDeviceBattery() : null,
               child: const Text('Start Tracking Battery Level'),
             ),
             ElevatedButton(
-              onPressed: _taskStarted ? () => _scheduler.pauseTask() : null,
+              onPressed: _taskStarted ? () => _pauseTask() : null,
               child: const Text('Stop Tracking Battery Level'),
             ),
             ElevatedButton(
-              onPressed: _taskStarted
-                  ? () {
-                      _scheduler.stopTask();
-                      showRegisterDeviceDialog(context);
-                    }
-                  : null,
+              onPressed: () => _stopTaskAndUnregisterDevice(),
               child: const Text('Unregister Device From Server'),
             )
           ],
         ),
       ),
     );
+  }
+
+  void _startTrackingDeviceBattery() {
+    if (!BatteryModule.isChargingState) {
+      _showErrorAlertDialog(
+          'Ensure device is charging before tracking battery level!');
+      return;
+    }
+
+    _scheduler.startTask(
+      duration: _refreshInterval,
+      onStopTaskCallback: _setTaskStoppedStatus,
+    );
+
+    _setTaskStartedStatus();
+  }
+
+  void _pauseTask() {
+    _scheduler.pauseTask();
+  }
+
+  void _stopTaskAndUnregisterDevice() {
+    _scheduler.stopTask();
+    showRegisterDeviceDialog(context);
   }
 }

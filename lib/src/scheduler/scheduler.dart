@@ -15,7 +15,7 @@ typedef TimerCallback = Function(Timer timer);
 typedef ErrorMessageCallback = Function(String error);
 
 class Scheduler {
-  late Timer _periodicTimer;
+  Timer? _periodicTimer;
   late ProcessHandler _handler;
   late final ErrorMessageCallback _onErrorCallback;
   Function? _onStopTaskCallback;
@@ -84,7 +84,11 @@ class Scheduler {
     HttpClient.clearBaseEndpoint();
   }
 
-  void _stopPeriodicTask(Timer timer) {
+  void _stopPeriodicTask(Timer? timer) {
+    if (timer == null || !timer.isActive) {
+      return;
+    }
+
     _handler.stopBackgroundProcessing();
     BatteryModule.unsubscribeBatteryStateChanges();
 

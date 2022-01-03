@@ -6,10 +6,16 @@ import '../../battery/services/battery_module.dart';
 import '../services/device_info.dart';
 
 void showRegisterDeviceDialog(BuildContext context) {
-  Future(() => showDialog(
+  Future(
+    () => showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (_) => const RegisterDeviceToServer()));
+      builder: (_) => WillPopScope(
+        onWillPop: () async => false,
+        child: const RegisterDeviceToServer(),
+      ),
+    ),
+  );
 }
 
 class RegisterDeviceToServer extends StatefulWidget {

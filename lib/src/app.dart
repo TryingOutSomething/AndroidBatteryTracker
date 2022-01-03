@@ -16,7 +16,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _backPressedCounter = 0;
+  DateTime _firstBackPress = DateTime.now();
   final Duration _refreshInterval = const Duration(seconds: 5);
   late Scheduler _scheduler;
   bool _taskStarted = false;
@@ -114,17 +114,22 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   bool _promptExitApp(BuildContext context) {
-    ++_backPressedCounter;
+    const backPressInterval = Duration(seconds: 2);
 
-    if (_backPressedCounter >= 2) return true;
+    final timeDifference = DateTime.now().difference(_firstBackPress);
+    final canExitApp = timeDifference < backPressInterval;
+    _firstBackPress = DateTime.now();
 
-    const snackBar = SnackBar(
-      content: Text('Press Back Button again to Exit'),
-      duration: Duration(seconds: 2),
+    if (canExitApp) {
+      return true;
+    }
+
+    const snack = SnackBar(
+      content: Text('Press Back button again to Exit'),
+      duration: backPressInterval,
     );
 
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-
+    ScaffoldMessenger.of(context).showSnackBar(snack);
     return false;
   }
 }

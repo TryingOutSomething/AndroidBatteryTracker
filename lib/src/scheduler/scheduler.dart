@@ -18,6 +18,7 @@ class Scheduler {
   late Timer _periodicTimer;
   late ProcessHandler _handler;
   late final ErrorMessageCallback _onErrorCallback;
+  Function? _onStopTaskCallback;
 
   Scheduler({required ErrorMessageCallback onErrorCallback}) {
     FlutterBackgroundAndroidConfig config =
@@ -32,13 +33,14 @@ class Scheduler {
     _onErrorCallback = onErrorCallback;
   }
 
-  void startTask({required Duration duration}) {
+  void startTask({required Duration duration, Function? onStopTaskCallback}) {
     BatteryModule.registerCallback(BatteryState.full, pauseTask);
     BatteryModule.registerCallback(BatteryState.discharging, pauseTask);
     BatteryModule.subscribeToBatteryStateChange();
 
     _handler.startBackgroundProcess();
     _periodicTimer = createPeriodicTimer(duration, _emitBatteryInfoToServer);
+    _onStopTaskCallback = onStopTaskCallback;
   }
 
   Future<void> _emitBatteryInfoToServer(Timer timer) async {
@@ -87,6 +89,7 @@ class Scheduler {
     BatteryModule.unsubscribeBatteryStateChanges();
 
     timer.cancel();
+    _onStopTaskCallback!();
   }
 
   static Timer createPeriodicTimer(Duration duration, TimerCallback callback) {

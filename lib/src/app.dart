@@ -33,9 +33,17 @@ class _MyHomePageState extends State<MyHomePage> {
     showDialog(context: context, builder: (_) => ErrorAlert(error: error));
   }
 
-  void _toggleTaskButtonStates() {
+  void _setTaskStartedStatus() {
     setState(() {
-      _taskStarted = !_taskStarted;
+      _taskStarted = true;
+    });
+  }
+
+  void _setTaskStoppedStatus() {
+    if (!_taskStarted) return;
+
+    setState(() {
+      _taskStarted = false;
     });
   }
 
@@ -53,31 +61,30 @@ class _MyHomePageState extends State<MyHomePage> {
             ElevatedButton(
               onPressed: !_taskStarted
                   ? () {
-                      if (!BatteryModule.isChargingState) {
+                if (!BatteryModule.isChargingState) {
                         showErrorAlertDialog(
                             'Ensure device is charging before tracking battery level!');
                         return;
                       }
-                      _scheduler.startTask(duration: _refreshInterval);
-                      _toggleTaskButtonStates();
+
+                      _scheduler.startTask(
+                        duration: _refreshInterval,
+                        onStopTaskCallback: _setTaskStoppedStatus,
+                      );
+
+                      _setTaskStartedStatus();
                     }
                   : null,
               child: const Text('Start Tracking Battery Level'),
             ),
             ElevatedButton(
-              onPressed: _taskStarted
-                  ? () {
-                      _scheduler.pauseTask();
-                      _toggleTaskButtonStates();
-                    }
-                  : null,
+              onPressed: _taskStarted ? () => _scheduler.pauseTask() : null,
               child: const Text('Stop Tracking Battery Level'),
             ),
             ElevatedButton(
               onPressed: _taskStarted
                   ? () {
                       _scheduler.stopTask();
-                      _toggleTaskButtonStates();
                       showRegisterDeviceDialog(context);
                     }
                   : null,

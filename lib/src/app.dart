@@ -27,7 +27,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     super.initState();
 
-    showRegisterDeviceDialog(context);
+    // showRegisterDeviceDialog(context);
   }
 
   Future<void> _showErrorAlertDialog(String error) async {
@@ -61,29 +61,31 @@ class _MyHomePageState extends State<MyHomePage> {
         return canExitApp;
       },
       child: Scaffold(
-        appBar: AppBar(
-          title: Text(widget.title),
-        ),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              BatteryInfo(refreshInterval: _refreshInterval),
-              ElevatedButton(
-                onPressed:
-                    !_taskStarted ? () => _startTrackingDeviceBattery() : null,
-                child: const Text('Start Tracking Battery Level'),
-              ),
-              ElevatedButton(
-                onPressed: _taskStarted ? () => _pauseTask() : null,
-                child: const Text('Stop Tracking Battery Level'),
-              ),
-              ElevatedButton(
-                onPressed: () => _stopTaskAndUnregisterDevice(),
-                child: const Text('Unregister Device From Server'),
-              )
-            ],
-          ),
+        body: GridView.count(
+          crossAxisCount: 2,
+          scrollDirection: Axis.horizontal,
+          children: <Widget>[
+            BatteryInfo(refreshInterval: _refreshInterval),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                ElevatedButton(
+                  onPressed: !_taskStarted
+                      ? () => _startTrackingDeviceBattery()
+                      : null,
+                  child: const Text('Start Tracking Battery Level'),
+                ),
+                ElevatedButton(
+                  onPressed: _taskStarted ? () => _pauseTask() : null,
+                  child: const Text('Stop Tracking Battery Level'),
+                ),
+                ElevatedButton(
+                  onPressed: () => _stopTaskAndUnregisterDevice(),
+                  child: const Text('Unregister Device From Server'),
+                )
+              ],
+            ),
+          ],
         ),
       ),
     );

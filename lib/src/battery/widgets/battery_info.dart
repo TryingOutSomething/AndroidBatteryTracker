@@ -21,6 +21,7 @@ class BatteryInfo extends StatefulWidget {
 
 class _BatteryInfoState extends State<BatteryInfo> with WidgetsBindingObserver {
   Timer? _timer;
+  final double _circularIndicatorSize = 200.0;
 
   @override
   void initState() {
@@ -63,12 +64,63 @@ class _BatteryInfoState extends State<BatteryInfo> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         FutureBuilder<int>(
             future: BatteryModule.batteryLevel,
             builder: (context, snapshot) {
               if (snapshot.hasData) {
-                return Text(snapshot.data.toString());
+                String batteryLevel = snapshot.data.toString();
+                double normalisedLevel = double.parse(batteryLevel) / 100.0;
+
+                Color indicatorColor = Colors.blue;
+                if (normalisedLevel < 0.2) {
+                  indicatorColor = Colors.red;
+                }
+
+                return SizedBox(
+                  width: _circularIndicatorSize,
+                  height: _circularIndicatorSize,
+                  child: Stack(children: <Widget>[
+                    ShaderMask(
+                      shaderCallback: (rect) {
+                        return SweepGradient(
+                          center: Alignment.center,
+                          startAngle: 0,
+                          endAngle: 3.14,
+                          stops: [normalisedLevel, normalisedLevel],
+                          colors: [indicatorColor, Colors.grey.withAlpha(55)],
+                        ).createShader(rect);
+                      },
+                      child: Container(
+                        width: _circularIndicatorSize,
+                        height: _circularIndicatorSize,
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                    Center(
+                      child: Container(
+                        width: _circularIndicatorSize - 30,
+                        height: _circularIndicatorSize - 30,
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.white,
+                        ),
+                        child: Center(
+                          child: Text(
+                            '$batteryLevel%',
+                            style: const TextStyle(fontSize: 60),
+                            maxLines: 1,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ]),
+                );
               }
 
               if (snapshot.hasError) {

@@ -29,12 +29,19 @@ class RegisterDeviceToServer extends StatefulWidget {
 class _RegisterDeviceToServerState extends State<RegisterDeviceToServer> {
   final _controller = TextEditingController();
   bool _inputHasError = false;
+  bool _isLoading = false;
   String _errorMessage = '';
 
   @override
   void dispose() {
     _controller.dispose();
     super.dispose();
+  }
+
+  void _toggleLoadingStatus() {
+    setState(() {
+      _isLoading = !_isLoading;
+    });
   }
 
   @override
@@ -51,19 +58,32 @@ class _RegisterDeviceToServerState extends State<RegisterDeviceToServer> {
       actions: <Widget>[
         TextButton(
           onPressed: () async {
+            _toggleLoadingStatus();
+
             final success = await _registerDevice();
 
             if (!success) {
+              _toggleLoadingStatus();
               return;
             }
 
             Navigator.of(context).pop();
           },
-          child: const Text('Register Device'),
+          child: _isLoading
+              ? Transform.scale(
+                  scale: 0.5,
+                  child: const CircularProgressIndicator(),
+                )
+              : const Text('Register Device'),
         ),
         TextButton(
           onPressed: () => SystemNavigator.pop(animated: true),
-          child: const Text('Exit App'),
+          child: const Text(
+            'Exit App',
+            style: TextStyle(
+              color: Colors.red,
+            ),
+          ),
         )
       ],
     );

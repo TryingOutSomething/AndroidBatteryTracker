@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../../api/dtos/device.dart';
 import '../../api/http_client.dart';
@@ -49,16 +50,21 @@ class _RegisterDeviceToServerState extends State<RegisterDeviceToServer> {
       ),
       actions: <Widget>[
         TextButton(
-            onPressed: () async {
-              final success = await _registerDevice();
+          onPressed: () async {
+            final success = await _registerDevice();
 
-              if (!success) {
-                return;
-              }
+            if (!success) {
+              return;
+            }
 
-              Navigator.of(context).pop();
-            },
-            child: const Text('Register Device'))
+            Navigator.of(context).pop();
+          },
+          child: const Text('Register Device'),
+        ),
+        TextButton(
+          onPressed: () => SystemNavigator.pop(animated: true),
+          child: const Text('Exit App'),
+        )
       ],
     );
   }

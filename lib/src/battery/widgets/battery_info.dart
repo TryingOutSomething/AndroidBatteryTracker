@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../battery/widgets/charging_state.dart';
@@ -82,6 +81,17 @@ class _BatteryInfoState extends State<BatteryInfo> with WidgetsBindingObserver {
                     child: Stack(
                       children: [
                         Center(
+                          child: CircularProgress(
+                            circleColour: progressColour,
+                            percentage: normalisedLevel,
+                            strokeWidth: 15,
+                          ),
+                        ),
+                        const Align(
+                          child: BatteryChargingStatus(),
+                          alignment: Alignment(0, -0.5),
+                        ),
+                        Center(
                           child: FittedBox(
                             child: Text(
                               '$batteryLevel%',
@@ -90,13 +100,6 @@ class _BatteryInfoState extends State<BatteryInfo> with WidgetsBindingObserver {
                                     MediaQuery.of(context).size.width * 0.2,
                               ),
                             ),
-                          ),
-                        ),
-                        Center(
-                          child: CircularProgress(
-                            circleColour: progressColour,
-                            percentage: normalisedLevel,
-                            strokeWidth: 15,
                           ),
                         ),
                       ],
@@ -111,7 +114,6 @@ class _BatteryInfoState extends State<BatteryInfo> with WidgetsBindingObserver {
 
               return const CircularProgressIndicator();
             }),
-        const BatteryChargingStatus()
       ],
     );
   }

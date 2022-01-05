@@ -26,22 +26,20 @@ class _BatteryChargingStatusState extends State<BatteryChargingStatus> {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             String dataString = snapshot.data.toString();
-            String capitalisedStatus = _getStatusFromEnum(dataString);
             BatteryModule.chargingStatus = _toEnum(dataString);
 
-            return Text(capitalisedStatus);
+            return Visibility(
+              visible: BatteryModule.isChargingState,
+              child: Icon(
+                Icons.bolt,
+                size: MediaQuery.of(context).size.width * 0.1,
+              ),
+            );
           }
 
           BatteryModule.chargingStatus = BatteryState.unknown;
           return const CircularProgressIndicator();
         });
-  }
-
-  String _getStatusFromEnum(String snapshotDataString) {
-    String status = snapshotDataString.split('.').last;
-    String capitalisedStatus = status[0].toUpperCase() + status.substring(1);
-
-    return capitalisedStatus;
   }
 
   BatteryState _toEnum(String snapshotDataString) {

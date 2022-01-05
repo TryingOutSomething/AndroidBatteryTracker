@@ -50,6 +50,17 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final ButtonStyle _elevatedButtonStyle = ElevatedButton.styleFrom(
+      primary: Colors.deepPurple.shade600,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12.0),
+      ),
+      minimumSize: const Size(350, 60),
+      textStyle: TextStyle(
+        fontSize: MediaQuery.of(context).size.width * 0.04,
+      ),
+    );
+
     return WillPopScope(
       onWillPop: () async {
         final canExitApp = _promptExitApp(context);
@@ -70,18 +81,28 @@ class _MyHomePageState extends State<MyHomePage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 ElevatedButton(
+                  style: _elevatedButtonStyle,
                   onPressed: !_taskStarted
                       ? () => _startTrackingDeviceBattery()
                       : null,
                   child: const Text('Start Tracking Battery Level'),
                 ),
-                ElevatedButton(
-                  onPressed: _taskStarted ? () => _pauseTask() : null,
-                  child: const Text('Stop Tracking Battery Level'),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 20.0),
+                  child: ElevatedButton(
+                    style: _elevatedButtonStyle,
+                    onPressed: _taskStarted ? () => _pauseTask() : null,
+                    child: const Text(
+                      'Stop Tracking Battery Level',
+                    ),
+                  ),
                 ),
                 ElevatedButton(
+                  style: _elevatedButtonStyle,
                   onPressed: () => _stopTaskAndUnregisterDevice(),
-                  child: const Text('Unregister Device From Server'),
+                  child: const Text(
+                    'Unregister Device From Server',
+                  ),
                 )
               ],
             ),

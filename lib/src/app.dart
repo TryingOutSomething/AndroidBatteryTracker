@@ -27,7 +27,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     super.initState();
 
-    // showRegisterDeviceDialog(context);
+    showRegisterDeviceDialog(context);
   }
 
   Future<void> _showErrorAlertDialog(String error) async {

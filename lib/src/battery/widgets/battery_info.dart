@@ -1,10 +1,12 @@
 import 'dart:async';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../battery/widgets/charging_state.dart';
 import '../../scheduler/scheduler.dart';
 import '../services/battery_module.dart';
+import 'progress_bar/circular_progress.dart';
 
 typedef DeviceIsChargingCallback = Function(bool status);
 
@@ -21,7 +23,6 @@ class BatteryInfo extends StatefulWidget {
 
 class _BatteryInfoState extends State<BatteryInfo> with WidgetsBindingObserver {
   Timer? _timer;
-  final double _circularIndicatorSize = 200.0;
 
   @override
   void initState() {
@@ -73,53 +74,34 @@ class _BatteryInfoState extends State<BatteryInfo> with WidgetsBindingObserver {
               if (snapshot.hasData) {
                 String batteryLevel = snapshot.data.toString();
                 double normalisedLevel = double.parse(batteryLevel) / 100.0;
+                Color progressColour = _getProgressBarColour(normalisedLevel);
 
-                Color indicatorColor = Colors.blue;
-                if (normalisedLevel < 0.2) {
-                  indicatorColor = Colors.red;
-                }
-
-                return SizedBox(
-                  width: _circularIndicatorSize,
-                  height: _circularIndicatorSize,
-                  child: Stack(children: <Widget>[
-                    ShaderMask(
-                      shaderCallback: (rect) {
-                        return SweepGradient(
-                          center: Alignment.center,
-                          startAngle: 0,
-                          endAngle: 3.14,
-                          stops: [normalisedLevel, normalisedLevel],
-                          colors: [indicatorColor, Colors.grey.withAlpha(55)],
-                        ).createShader(rect);
-                      },
-                      child: Container(
-                        width: _circularIndicatorSize,
-                        height: _circularIndicatorSize,
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                    Center(
-                      child: Container(
-                        width: _circularIndicatorSize - 30,
-                        height: _circularIndicatorSize - 30,
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.white,
-                        ),
-                        child: Center(
-                          child: Text(
-                            '$batteryLevel%',
-                            style: const TextStyle(fontSize: 60),
-                            maxLines: 1,
+                return Expanded(
+                  child: AspectRatio(
+                    aspectRatio: 0.7,
+                    child: Stack(
+                      children: [
+                        Center(
+                          child: FittedBox(
+                            child: Text(
+                              '$batteryLevel%',
+                              style: TextStyle(
+                                fontSize:
+                                    MediaQuery.of(context).size.width * 0.2,
+                              ),
+                            ),
                           ),
                         ),
-                      ),
+                        Center(
+                          child: CircularProgress(
+                            circleColour: progressColour,
+                            percentage: normalisedLevel,
+                            strokeWidth: 15,
+                          ),
+                        ),
+                      ],
                     ),
-                  ]),
+                  ),
                 );
               }
 
@@ -132,5 +114,17 @@ class _BatteryInfoState extends State<BatteryInfo> with WidgetsBindingObserver {
         const BatteryChargingStatus()
       ],
     );
+  }
+
+  Color _getProgressBarColour(double percentage) {
+    Color color = Colors.green;
+
+    if (percentage < 0.3) {
+      color = Colors.red;
+    } else if (percentage < 0.7) {
+      color = Colors.orange;
+    }
+
+    return color;
   }
 }

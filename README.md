@@ -1,4 +1,4 @@
-# client_dart
+# android_battery_tracker
 
 A new Flutter project.
 

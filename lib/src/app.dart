@@ -50,15 +50,17 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final TextStyle _textStyle = TextStyle(
+      fontSize: MediaQuery.of(context).size.width * 0.04,
+    );
+
     final ButtonStyle _elevatedButtonStyle = ElevatedButton.styleFrom(
       primary: Colors.deepPurple.shade600,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12.0),
       ),
       minimumSize: const Size(350, 60),
-      textStyle: TextStyle(
-        fontSize: MediaQuery.of(context).size.width * 0.04,
-      ),
+      textStyle: _textStyle,
     );
 
     return WillPopScope(
@@ -80,6 +82,10 @@ class _MyHomePageState extends State<MyHomePage> {
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
+                Visibility(
+                  child: _isTrackingIndicator(_textStyle),
+                  visible: _taskStarted,
+                ),
                 ElevatedButton(
                   style: _elevatedButtonStyle,
                   onPressed: !_taskStarted
@@ -154,5 +160,25 @@ class _MyHomePageState extends State<MyHomePage> {
 
     ScaffoldMessenger.of(context).showSnackBar(snack);
     return false;
+  }
+
+  Padding _isTrackingIndicator(TextStyle _textStyle) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          Transform.scale(
+            scale: 0.5,
+            child: const CircularProgressIndicator(),
+          ),
+          Text(
+            'Tracking Battery Level',
+            style: _textStyle,
+          )
+        ],
+      ),
+    );
   }
 }

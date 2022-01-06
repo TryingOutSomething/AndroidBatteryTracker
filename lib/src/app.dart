@@ -73,47 +73,50 @@ class _MyHomePageState extends State<MyHomePage> {
         return canExitApp;
       },
       child: Scaffold(
-        body: GridView.count(
-          crossAxisCount: 2,
-          scrollDirection: Axis.horizontal,
-          children: <Widget>[
-            BatteryInfo(
-              refreshInterval: const Duration(minutes: 1),
-            ),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Visibility(
-                  child: _isTrackingIndicator(_textStyle),
-                  visible: _taskStarted,
-                ),
-                ElevatedButton(
-                  style: _elevatedButtonStyle,
-                  onPressed: !_taskStarted
-                      ? () => _startTrackingDeviceBattery()
-                      : null,
-                  child: const Text('Start Tracking Battery Level'),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 20.0),
-                  child: ElevatedButton(
+        body: Center(
+          child: GridView.count(
+            crossAxisCount: 2,
+            shrinkWrap: true,
+            scrollDirection: Axis.horizontal,
+            children: <Widget>[
+              BatteryInfo(
+                refreshInterval: const Duration(minutes: 1),
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Visibility(
+                    child: _isTrackingIndicator(_textStyle),
+                    visible: _taskStarted,
+                  ),
+                  ElevatedButton(
                     style: _elevatedButtonStyle,
-                    onPressed: _taskStarted ? () => _pauseTask() : null,
-                    child: const Text(
-                      'Stop Tracking Battery Level',
+                    onPressed: !_taskStarted
+                        ? () => _startTrackingDeviceBattery()
+                        : null,
+                    child: const Text('Start Tracking Battery Level'),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 20.0),
+                    child: ElevatedButton(
+                      style: _elevatedButtonStyle,
+                      onPressed: _taskStarted ? () => _pauseTask() : null,
+                      child: const Text(
+                        'Stop Tracking Battery Level',
+                      ),
                     ),
                   ),
-                ),
-                ElevatedButton(
-                  style: _elevatedButtonStyle,
-                  onPressed: () => _stopTaskAndUnregisterDevice(),
-                  child: const Text(
-                    'Unregister Device From Server',
-                  ),
-                )
-              ],
-            ),
-          ],
+                  ElevatedButton(
+                    style: _elevatedButtonStyle,
+                    onPressed: () => _stopTaskAndUnregisterDevice(),
+                    child: const Text(
+                      'Unregister Device From Server',
+                    ),
+                  )
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

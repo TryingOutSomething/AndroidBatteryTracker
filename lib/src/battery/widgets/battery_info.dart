@@ -93,6 +93,7 @@ class _BatteryInfoState extends State<BatteryInfo> with WidgetsBindingObserver {
                         ),
                         Center(
                           child: FittedBox(
+                            fit: BoxFit.scaleDown,
                             child: Text(
                               '$batteryLevel%',
                               style: TextStyle(

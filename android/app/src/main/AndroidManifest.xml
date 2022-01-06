@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.tryingoutsomething.batterytracker.client_dart">
+          package="com.tryingoutsomething.batterytracker.android_battery_tracker">
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
@@ -7,9 +7,8 @@
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS"/>
 
     <application
-            android:label="client_dart"
-            android:icon="@mipmap/ic_launcher"
-            android:usesCleartextTraffic="true">
+            android:label="Android Battery Tracker"
+            android:icon="@mipmap/ic_launcher">
         <activity
                 android:name=".MainActivity"
                 android:launchMode="singleTop"

@@ -9,7 +9,7 @@ import 'dtos/device.dart';
 import 'dtos/response.dart';
 import 'helpers/routes.dart';
 
-class HttpClient {
+class HttpModule {
   static String? _baseEndpoint;
   static const String _cannotConnectToServerMessage =
       'Unable to connect to server';

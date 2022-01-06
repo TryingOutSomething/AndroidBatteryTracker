@@ -90,7 +90,7 @@ class _RegisterDeviceToServerState extends State<RegisterDeviceToServer> {
   }
 
   Future<bool> _registerDevice() async {
-    final isValidUrl = HttpClient.isValidUrl(_controller.text);
+    final isValidUrl = HttpModule.isValidUrl(_controller.text);
 
     if (!isValidUrl) {
       setState(() {
@@ -101,14 +101,14 @@ class _RegisterDeviceToServerState extends State<RegisterDeviceToServer> {
       return false;
     }
 
-    HttpClient.setBaseEndPoint(_controller.text);
+    HttpModule.setBaseEndPoint(_controller.text);
 
     final device = Device(
         deviceId: DeviceInfo.deviceId,
         deviceName: await DeviceInfo.deviceName,
         batteryLevel: (await BatteryModule.batteryLevel).toString());
 
-    final responseResult = await HttpClient.registerDevice(device);
+    final responseResult = await HttpModule.registerDevice(device);
 
     if (!responseResult.success) {
       setState(() {

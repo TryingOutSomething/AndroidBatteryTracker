@@ -48,7 +48,7 @@ class Scheduler {
         deviceId: DeviceInfo.deviceId,
         batteryLevel: (await BatteryModule.batteryLevel).toString());
 
-    final responseResult = await HttpClient.emitBatteryLevel(device);
+    final responseResult = await HttpModule.emitBatteryLevel(device);
 
     if (responseResult.success) {
       return;
@@ -80,8 +80,8 @@ class Scheduler {
     BatteryModule.unregisterCallbacksFromAllStates();
 
     final device = UnregisterDevice(deviceId: DeviceInfo.deviceId);
-    HttpClient.unregisterDevice(device);
-    HttpClient.clearBaseEndpoint();
+    HttpModule.unregisterDevice(device);
+    HttpModule.clearBaseEndpoint();
   }
 
   void _stopPeriodicTask(Timer? timer) {

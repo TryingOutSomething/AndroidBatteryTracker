@@ -17,7 +17,6 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   DateTime _firstBackPress = DateTime.now();
-  final Duration _refreshInterval = const Duration(seconds: 5);
   late Scheduler _scheduler;
   bool _taskStarted = false;
 
@@ -78,7 +77,9 @@ class _MyHomePageState extends State<MyHomePage> {
           crossAxisCount: 2,
           scrollDirection: Axis.horizontal,
           children: <Widget>[
-            BatteryInfo(refreshInterval: _refreshInterval),
+            BatteryInfo(
+              refreshInterval: const Duration(minutes: 1),
+            ),
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
@@ -126,7 +127,7 @@ class _MyHomePageState extends State<MyHomePage> {
     }
 
     _scheduler.startTask(
-      duration: _refreshInterval,
+      duration: const Duration(minutes: 5),
       onStopTaskCallback: _setTaskStoppedStatus,
     );
 

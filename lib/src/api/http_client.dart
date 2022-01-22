@@ -17,15 +17,7 @@ class HttpModule {
     'Content-type': 'application/json; charset=UTF-8'
   };
 
-  static bool setBaseEndPoint(String url) {
-    if (!isValidUrl(url)) {
-      return false;
-    }
-
-    _baseEndpoint = url;
-
-    return true;
-  }
+  static set baseEndPoint(String url) => _baseEndpoint = url;
 
   static void clearBaseEndpoint() => _baseEndpoint = '';
 

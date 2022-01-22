@@ -102,7 +102,7 @@ class _RegisterDeviceToServerState extends State<RegisterDeviceToServer> {
       return false;
     }
 
-    HttpModule.setBaseEndPoint(_controller.text);
+    HttpModule.baseEndPoint = _controller.text;
 
     final device = Device(
         deviceId: DeviceInfo.deviceId,

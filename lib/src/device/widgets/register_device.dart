@@ -62,13 +62,12 @@ class _RegisterDeviceToServerState extends State<RegisterDeviceToServer> {
 
             final success = await _registerDevice();
 
-            // if (!success) {
-            //   _toggleLoadingStatus();
-            //   return;
-            // }
-            //
-            // Navigator.of(context).pop();
-            return;
+            if (!success) {
+              _toggleLoadingStatus();
+              return;
+            }
+
+            Navigator.of(context).pop();
           },
           child: _isLoading
               ? Transform.scale(

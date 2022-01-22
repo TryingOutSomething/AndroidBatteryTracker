@@ -12,8 +12,11 @@ class ResponseResult {
       [String? customMessage]) {
     return ResponseResult(
         success: successStatus,
-        serviceCode: response['service_code'],
-        message: customMessage ?? response['message']);
+        serviceCode:
+            response['service_code'] ?? response['detail']['service_code'],
+        message: customMessage ??
+            response['message'] ??
+            response['detail']['message']);
   }
 
   factory ResponseResult.unexpectedError(String serviceCode,

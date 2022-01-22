@@ -35,7 +35,7 @@ class HttpModule {
       final response = await http
           .post(Uri.parse(_baseEndpoint! + ApiRoutes.registerDevice),
               headers: _headers, body: jsonEncode(device.toJson()))
-          .timeout(const Duration(seconds: 3));
+          .timeout(const Duration(seconds: 5));
 
       bool isSuccessfulRequest =
           response.statusCode == 200 || response.statusCode == 201;

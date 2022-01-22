@@ -45,7 +45,11 @@ class HttpModule {
               headers: _headers, body: jsonEncode(device.toJson()))
           .timeout(const Duration(seconds: 3));
 
-      return ResponseResult.fromJson(jsonDecode(response.body), true);
+      bool isSuccessfulRequest =
+          response.statusCode == 200 || response.statusCode == 201;
+
+      return ResponseResult.fromJson(
+          jsonDecode(response.body), isSuccessfulRequest);
     } on SocketException {
       return ResponseResult.unexpectedError(
           ServiceCode.cannotConnectToServer, _cannotConnectToServerMessage);
@@ -66,7 +70,10 @@ class HttpModule {
           headers: _headers,
           body: jsonEncode(device.toJson()));
 
-      return ResponseResult.fromJson(jsonDecode(response.body), true);
+      bool isSuccessfulRequest = response.statusCode == 200;
+
+      return ResponseResult.fromJson(
+          jsonDecode(response.body), isSuccessfulRequest);
     } on SocketException {
       return ResponseResult.unexpectedError(
           ServiceCode.cannotConnectToServer, _cannotConnectToServerMessage);
@@ -87,7 +94,10 @@ class HttpModule {
           headers: _headers,
           body: jsonEncode(deviceBatteryInfo));
 
-      return ResponseResult.fromJson(jsonDecode(response.body), true);
+      bool isSuccessfulRequest = response.statusCode == 200;
+
+      return ResponseResult.fromJson(
+          jsonDecode(response.body), isSuccessfulRequest);
     } on SocketException {
       return ResponseResult.unexpectedError(
           ServiceCode.cannotConnectToServer, _cannotConnectToServerMessage);
